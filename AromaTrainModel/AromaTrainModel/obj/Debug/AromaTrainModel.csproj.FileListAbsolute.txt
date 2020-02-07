@@ -1,0 +1,11 @@
+D:\DriveD\Project\Github\..Net\AromaTrainModel\AromaTrainModel\AromaTrainModel\bin\Debug\AromaTrainModel.exe.config
+D:\DriveD\Project\Github\..Net\AromaTrainModel\AromaTrainModel\AromaTrainModel\bin\Debug\AromaTrainModel.exe
+D:\DriveD\Project\Github\..Net\AromaTrainModel\AromaTrainModel\AromaTrainModel\bin\Debug\AromaTrainModel.pdb
+D:\DriveD\Project\Github\..Net\AromaTrainModel\AromaTrainModel\AromaTrainModel\bin\Debug\Newtonsoft.Json.dll
+D:\DriveD\Project\Github\..Net\AromaTrainModel\AromaTrainModel\AromaTrainModel\bin\Debug\Newtonsoft.Json.xml
+D:\DriveD\Project\Github\..Net\AromaTrainModel\AromaTrainModel\AromaTrainModel\obj\Debug\AromaTrainModel.csprojAssemblyReference.cache
+D:\DriveD\Project\Github\..Net\AromaTrainModel\AromaTrainModel\AromaTrainModel\obj\Debug\AromaTrainModel.csproj.ResolveComReference.cache
+D:\DriveD\Project\Github\..Net\AromaTrainModel\AromaTrainModel\AromaTrainModel\obj\Debug\AromaTrainModel.csproj.CoreCompileInputs.cache
+D:\DriveD\Project\Github\..Net\AromaTrainModel\AromaTrainModel\AromaTrainModel\obj\Debug\AromaTrainModel.csproj.CopyComplete
+D:\DriveD\Project\Github\..Net\AromaTrainModel\AromaTrainModel\AromaTrainModel\obj\Debug\AromaTrainModel.exe
+D:\DriveD\Project\Github\..Net\AromaTrainModel\AromaTrainModel\AromaTrainModel\obj\Debug\AromaTrainModel.pdb
