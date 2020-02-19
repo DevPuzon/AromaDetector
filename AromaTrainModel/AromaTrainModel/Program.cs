@@ -52,7 +52,7 @@ namespace AromaTrainModel
         { 
             string incomingByte;
             incomingByte = _serialPort.ReadExisting();
-            data += incomingByte;
+            data += incomingByte; 
             Thread.Sleep(1000);
             if (isStart)
             {
@@ -62,25 +62,27 @@ namespace AromaTrainModel
                     iscalibrate = false;
                 }
                 Debug.WriteLine(count);
-                if (count > 100)
+                if (count > 400)
                 {
                     String getdata = data.Replace(System.Environment.NewLine, "");
                     culculation(getdata);
                     Console.WriteLine(JsonConvert.SerializeObject(getdata));
                     isStart = false;
                     saveData();
-                    Console.WriteLine("Do you want to train again? y or n ");
-                    String again = Console.ReadLine();
+                    //Console.WriteLine("Do you want to train again? y or n ");
+                    //String again = Console.ReadLine();
 
-                    if (again.Equals("y"))
-                    {
-                        init();
-                    }
-                    else
-                    {
-                        //Environment.Exit(-1);
-                        init();
-                    }
+                    //if (again.Equals("y"))
+                    //{
+                    //    init();
+                    //}
+                    //else
+                    //{
+                    //    //Environment.Exit(-1);
+                    //    init();
+                    //}
+
+                    init();
                     iscalibrate = true;
                 } 
                 count++; 
@@ -163,7 +165,7 @@ namespace AromaTrainModel
 
             String saveText = JsonConvert.SerializeObject(aromaModels);
             System.IO.File.WriteAllText(filePath, saveText);
-            aromaModels.Clear();
+            sensorDatas.Clear();
         }
 
         private static void init()
@@ -172,7 +174,7 @@ namespace AromaTrainModel
             aromaTitle = Console.ReadLine();
             isStart = true;
             count = 0;
-            Console.ReadLine();
+            Console.ReadKey();
         }
 
         //private static String filePath = "./AromaTrainModel.json";
