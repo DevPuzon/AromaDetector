@@ -20,13 +20,13 @@ namespace AromaTrainModel
     }
     public class SensorData
     {
-        public String mq135 { get; set; }
-        public String mq3 { get; set; }
-        public String mq5 { get; set; }
-        public String mq138 { get; set; }
-        public String mq2 { get; set; }
+        public int mq135 { get; set; }
+        public int mq3 { get; set; }
+        public int mq5 { get; set; }
+        public int mq138 { get; set; }
+        public int mq2 { get; set; }
         public SensorData() { }
-        public SensorData(String mq135, String mq3, String mq5, String mq138, String mq2)
+        public SensorData(int mq135, int mq3, int mq5, int mq138, int mq2)
         {
             this.mq135 = mq135;
             this.mq3 = mq3;

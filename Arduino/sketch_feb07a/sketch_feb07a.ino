@@ -17,7 +17,7 @@ void loop() {
   String imq138 = String(analogRead(mq138));
   String imq2 = String(analogRead(mq2)); 
 
-  String jsonData = imq135+","+imq3+","+imq5+","+imq138+","+imq2;
+  String jsonData = imq135+","+imq3+","+imq5+","+imq138+","+imq2+",)";
   Serial.println(jsonData);  
-  delay(500);
+  delay(800);
 }

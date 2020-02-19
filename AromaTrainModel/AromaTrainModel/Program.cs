@@ -2,10 +2,12 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -33,7 +35,7 @@ namespace AromaTrainModel
         {
             Console.WriteLine("Port Name :"); 
             _serialPort = new SerialPort();
-            _serialPort.PortName = Console.ReadLine(); // NAME of Prot example COM8
+            _serialPort.PortName = "com11"; // NAME of Prot example COM8
             _serialPort.Parity = Parity.None;
             _serialPort.StopBits = StopBits.One;
             _serialPort.DataBits = 8;
@@ -45,48 +47,74 @@ namespace AromaTrainModel
             _serialPort.Open();
             _serialPort.DataReceived += new SerialDataReceivedEventHandler(SerialHandler);
         }
-
+         private static bool iscalibrate= true;
         private static void SerialHandler(object sender, SerialDataReceivedEventArgs e)
-        {
+        { 
+            string incomingByte;
+            incomingByte = _serialPort.ReadExisting();
+            data += incomingByte;
+            Thread.Sleep(1000);
             if (isStart)
             {
-                string incomingByte;
-                incomingByte = _serialPort.ReadExisting();
-                data += incomingByte;
-
-                String[] datas = data.Split(',');
-                Console.WriteLine(datas[0]);
-                Console.WriteLine(datas[1]);
-                Console.WriteLine(datas[2]);
-                Console.WriteLine(datas[3]);
-                Console.WriteLine(datas[4]);
-                SensorData sensorData =
-                    new SensorData(datas[0], datas[1],
-                    datas[2],
-                    datas[3],
-                    datas[4]);
-                Console.WriteLine(data);
-                Console.WriteLine(JsonConvert.SerializeObject(sensorData)); 
-                if (count < 100)
+                if (iscalibrate)
                 {
-                    sensorDatas.Add(sensorData);
+                    Console.WriteLine("Calebrating.........");
+                    iscalibrate = false;
                 }
-                else
+                Debug.WriteLine(count);
+                if (count > 100)
                 {
+                    String getdata = data.Replace(System.Environment.NewLine, "");
+                    culculation(getdata);
+                    Console.WriteLine(JsonConvert.SerializeObject(getdata));
                     isStart = false;
                     saveData();
                     Console.WriteLine("Do you want to train again? y or n ");
                     String again = Console.ReadLine();
-                    if (again == "y")
+
+                    if (again.Equals("y"))
                     {
                         init();
                     }
                     else
                     {
-                        Environment.Exit(-1);
+                        //Environment.Exit(-1);
+                        init();
                     }
+                    iscalibrate = true;
+                } 
+                count++; 
+            }
+            else
+            {
+                data = "";
+            }
+        }
+
+        private static void culculation(string getdata)
+        {
+            String[] getdatas = getdata.Split(')');
+            for(var i = 0; i < getdatas.Length - 1;i++)
+            {
+                try
+                {
+                    String[] datas = getdatas[i].Split(','); 
+                    Console.WriteLine("mq135 : " + datas[0]);
+                    Console.WriteLine(" | mq3 : " + datas[1]);
+                    Console.WriteLine(" | mq5 : " + datas[2]);
+                    Console.WriteLine(" | mq138 : " + datas[3]);
+                    Console.WriteLine(" | mq2 : " + datas[4]);
+                    SensorData sensorData = new SensorData(int.Parse(datas[0]), int.Parse(datas[1]),
+                       int.Parse(datas[2]),
+                       int.Parse(datas[3]),
+                       int.Parse(datas[4]));
+                    sensorDatas.Add(sensorData);
+                    Console.WriteLine("Json " + JsonConvert.SerializeObject(sensorData) + " || count : " + i.ToString());
                 }
-                count++;
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
         }
 
@@ -95,32 +123,29 @@ namespace AromaTrainModel
             Application app = new Application();
             aromaModels.Add(new AromaModel(aromaTitle, sensorDatas));
 
-            String saveText = JsonConvert.SerializeObject(aromaModels);
-            System.IO.File.WriteAllText(filePath, saveText);
-
             Workbook workbook = app.Workbooks.Open(excelPath);
+            Debug.WriteLine(aromaModels.Count.ToString());
             Worksheet sheet = workbook.Worksheets[aromaModels.Count];
-            sheet.Name = aromaTitle;
-             
+            sheet.Name = aromaTitle; 
 
             //A Title 
-            sheet.Cells[1, 1] = "Aroma";
+            sheet.Cells[1, 1] = "aroma";
             //B MQ135
-            sheet.Cells[1, 2] = "MQ135";
+            sheet.Cells[1, 2] = "mq135";
             //C MQ3
-            sheet.Cells[1, 3] = "MQ3";
+            sheet.Cells[1, 3] = "mq3";
             //D MQ5
-            sheet.Cells[1, 4] = "MQ5";
+            sheet.Cells[1, 4] = "mq5";
             //E MQ138
-            sheet.Cells[1, 5] = "MQ138";
+            sheet.Cells[1, 5] = "mq138";
             //F MQ2
-            sheet.Cells[1, 6] = "MQ2";
+            sheet.Cells[1, 6] = "mq2";
 
             for (var ii = 0; ii < sensorDatas.Count; ii++)
             {
                 SensorData sensorData = sensorDatas[ii];
                 //A Title 
-                sheet.Cells[ii + 2, 1] = aromaTitle;
+                sheet.Cells[ii + 2, 1] = "test "+(ii+1).ToString();
                 //B MQ135
                 sheet.Cells[ii + 2,2] = sensorData.mq135;
                 //C MQ3
@@ -135,6 +160,9 @@ namespace AromaTrainModel
 
             workbook.Save();
             workbook.Close();
+
+            String saveText = JsonConvert.SerializeObject(aromaModels);
+            System.IO.File.WriteAllText(filePath, saveText);
             aromaModels.Clear();
         }
 
