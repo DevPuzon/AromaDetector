@@ -54,6 +54,7 @@ namespace AromaTrainModel
             incomingByte = _serialPort.ReadExisting();
             data += incomingByte; 
             Thread.Sleep(1000);
+            Console.WriteLine(data);
             if (isStart)
             {
                 if (iscalibrate)
@@ -62,7 +63,7 @@ namespace AromaTrainModel
                     iscalibrate = false;
                 }
                 Debug.WriteLine(count);
-                if (count > 400)
+                if (count > 30)
                 {
                     String getdata = data.Replace(System.Environment.NewLine, "");
                     culculation(getdata);
@@ -122,16 +123,20 @@ namespace AromaTrainModel
 
         private static void saveData()
         {
+            int itemIndex =12;
+
             Application app = new Application();
             aromaModels.Add(new AromaModel(aromaTitle, sensorDatas));
+            //aromaModels[itemIndex-1] = new AromaModel(aromaTitle, sensorDatas);
 
             Workbook workbook = app.Workbooks.Open(excelPath);
-            Debug.WriteLine(aromaModels.Count.ToString());
-            Worksheet sheet = workbook.Worksheets[aromaModels.Count];
+            Debug.WriteLine((aromaModels.Count - 1).ToString());
+            Worksheet sheet = workbook.Worksheets[aromaModels.Count-1];
+            //Worksheet sheet = workbook.Worksheets[itemIndex];
             sheet.Name = aromaTitle; 
 
             //A Title 
-            sheet.Cells[1, 1] = "aroma";
+            sheet.Cells[1, 1] = "test";
             //B MQ135
             sheet.Cells[1, 2] = "mq135";
             //C MQ3
@@ -179,8 +184,8 @@ namespace AromaTrainModel
 
         //private static String filePath = "./AromaTrainModel.json";
         //private static String excelPath = "./AromaTrainExcel.xlsx"; 
-        private static String filePath = @"D:\DriveD\Project\Github\..Net\AromaTrainModel\AromaTrainModel\AromaTrainModel/AromaTrainModel.json";
-        private static String excelPath = @"D:\DriveD\Project\Github\..Net\AromaTrainModel\AromaTrainModel\AromaTrainModel/AromaTrainExcel.xlsx";
+        private static String filePath = @"D:\DriveD\Project\Github\..Net\AromaTrainModel\AromaTrainModel\AromaTrainModel\AromaTrainModel36aroma.json";
+        private static String excelPath = @"D:\DriveD\Project\Github\..Net\AromaTrainModel\AromaTrainModel\AromaTrainModel\AromaTrainExcel36aroma.xlsx";
         
         private static List<AromaModel> getExistingModel()
         {

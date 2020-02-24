@@ -1,0 +1,85 @@
+import json
+
+data = open('D:\DriveD\Project\Github\..Net\AromaTrainModel\AromaTrainModel\AromaTrainModel\AromaTrainModel.json','r').read()
+modelArray = json.loads(data)
+
+ 
+import serial
+
+serial_port = 'com11';
+baud_rate = 9600; #In arduino, Serial.begin(baud_rate) 
+ser = serial.Serial(serial_port, baud_rate)
+
+
+
+annScorings = []
+def checkingData(valMq135, valMq3, valMq5, valMq138, valMq2): 
+    for model in modelArray :
+        sensorDatas = model['sensorDatas']
+        imq135 = 0
+        imq3 = 0
+        imq5 = 0
+        imq138 = 0
+        imq2 = 0
+        for sensorData in sensorDatas:
+            if sensorData['mq135'] == valMq135:
+                imq135 = imq135 + 1
+                
+            if sensorData['mq3'] == valMq3:
+                imq3 = imq3 + 1
+                
+            if sensorData['mq5'] == valMq5:
+                imq5 = imq5 + 1
+                
+            if sensorData['mq138'] == valMq138:
+                imq138 = imq138 + 1
+                
+            if sensorData['mq2'] == valMq2:
+                imq2 = imq2 + 1
+       
+        annScorings.append({'aroma':model['aroma'],'mq135':imq135,'mq3':imq3,'mq5':imq5,'mq138':imq138,'mq2':imq2})     
+#    print(annScorings)
+    
+def getResult():
+    modelScores = []
+    for annScoring in annScorings:
+        isSetScore = False
+
+        modelCount = 0
+        origScore = 0 
+        for modelScore in modelScores:
+            if modelScore['aroma'] == annScoring['aroma']:
+                origScore = modelScore['score']
+                modelScores[modelCount]['score'] = origScore
+                isSetScore = True
+            modelCount = modelCount + 1
+            
+        if len(modelScores) == None or not isSetScore:
+            origScore = annScoring['mq135'] + origScore
+            origScore = annScoring['mq3'] + origScore
+            origScore = annScoring['mq5'] + origScore
+            origScore = annScoring['mq138'] + origScore
+            origScore = annScoring['mq2'] + origScore
+            modelScores.append({ 'aroma':annScoring['aroma'],'score':origScore})
+    print(modelScores)
+
+validCount = 0
+while validCount < 220:
+    arduinodata = ser.readline();
+    arduinodata = arduinodata.decode("utf-8")
+    print(arduinodata)
+    datas = arduinodata.split(',')
+    valMq135 = datas[0]
+    valMq3 = datas[1]
+    valMq5 =  datas[2]
+    valMq138 = datas[3]
+    valMq2 = datas[4]
+    checkingData(valMq135, valMq3,valMq5,valMq138, valMq2)
+    validCount = validCount + 1
+    
+getResult()
+#datas = modelArray[0]['sensorDatas'] 
+###jsonDatas = json.loads(datas) 
+#for data in datas: 
+#    checkingData(data['mq135'], data['mq3'], data['mq5'], data['mq138'], data['mq2'])
+
