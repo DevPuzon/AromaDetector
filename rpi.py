@@ -1,10 +1,8 @@
 import json
 import serial
 
-data = open('D:\DriveD\Project\Github\..Net\AromaTrainModel\AromaTrainModel\AromaTrainModel\AromaTrainModel.json','r').read()
+data = open('.\AromaTrainModel\AromaTrainModel\AromaTrainModel.json','r').read()
 modelArray = json.loads(data)
-
-
 
 
 annScorings = []
@@ -240,13 +238,15 @@ def getLowerNumber(modelScores):
                 repmodelScores.remove(modelScore) 
     return ret 
 
+ #In arduino, Serial.begin(baud_rate) 
+ #CONNECTION ARDUINO TO RPI
 serial_port = 'com11';
-baud_rate = 9600; #In arduino, Serial.begin(baud_rate) 
+baud_rate = 9600;
 ser = serial.Serial(serial_port, baud_rate)
 
 analyze() 
 validCount = 0
-while validCount <70:
+while validCount < 30: #TIME VALIDATION
     arduinodata = ser.readline();
     arduinodata = arduinodata.decode("utf-8")
     print("----------")
@@ -259,7 +259,7 @@ while validCount <70:
         valMq138 = datas[3]
         valMq2 = datas[4]
 #        if valMq135 < 110 and valMq3 < 110 and valMq3 < 110 and valMq138 < 110 and valMq2 < 110 : 
-        if validCount > 65:
+        if validCount > 20: #TIME WHERE THE PROCESS START 
             checkingData(int(valMq135), int(valMq3),
                          int(valMq5),int(valMq138), int(valMq2))
         validCount = validCount + 1
